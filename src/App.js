@@ -10,6 +10,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronCircleRight } from '@fortawesome/free-solid-svg-icons'
 import { faChevronCircleLeft } from '@fortawesome/free-solid-svg-icons'
 // import { faQuestion } from '@fortawesome/free-solid-svg-icons'
+// import Fade from 'react-reveal/Fade'
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
 
 
 export const useStyles = makeStyles(theme => ({
@@ -70,37 +73,28 @@ export const useStyles = makeStyles(theme => ({
 
 }));
 
+
+
 function App() {
 
   const classes = useStyles("");
 
   const screenWidth = window.innerWidth;
 
-  // const [allPokemones, setPokemones] = useState({
-  //   nombre: "",
-  //   imagen: ""
-  // });
+  const [open, setOpen] = useState(false);
 
-  // const [pokemon1, setPokemon1] = useState({
-  //   nombre: "",
-  //   imagen: ""
-  // });
-  // const [pokemon2, setPokemon2] = useState({
-  //   nombre: "",
-  //   imagen: ""
-  // });
-  // const [pokemon3, setPokemon3] = useState({
-  //   nombre: "",
-  //   imagen: ""
-  // });
-  // const [pokemon4, setPokemon4] = useState({
-  //   nombre: "",
-  //   imagen: ""
-  // });
-  // const [pokemon5, setPokemon5] = useState({
-  //   nombre: "",
-  //   imagen: ""
-  // });
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  function handleClick(event) {
+    const id = event.target.id;
+    console.log(id);
+  };
 
   const [pokemonNombre1, setPokemonNombre1] = useState("");
   const [pokemonImagen1, setPokemonImagen1] = useState("");
@@ -114,32 +108,6 @@ function App() {
   const [pokemonImagen5, setPokemonImagen5] = useState("");
 
   const [indexActual, setIndexActual] = useState(1);
-
-
-  // const [pokemones, setPokemones] = useState({
-  //   pokemon: {
-  //     nombre: "",
-  //     imagen: "",
-  //   },
-  //   pokemon: {
-  //     nombre: "",
-  //     imagen: "",
-  //   },
-  //   pokemon: {
-  //     nombre: "",
-  //     imagen: "",
-  //   },
-  //   pokemon: {
-  //     nombre: "",
-  //     imagen: "",
-  //   },
-  //   pokemon: {
-  //     nombre: "",
-  //     imagen: "",
-  //   },
-  // })
-
-  // EN el fetch traer los 5 resultados, setearlos en 'pokemones' y mapear pokemones 
 
   const pokemones = [
     {
@@ -175,15 +143,11 @@ function App() {
   useEffect(() => {
 
     fetchPokemonInfo();
-    console.log("JEJES");
 
   }, [indexActual]);
 
 
   function fetchPokemonInfo() {
-
-    console.log("JEJOS");
-    console.log("INDEX: " + indexActual);
 
     // PRIMERO DE LA PAGINA
     fetch('https://pokeapi.co/api/v2/pokemon/' + indexActual)
@@ -193,52 +157,94 @@ function App() {
       .then(response => response.json())
       .then(pokemon => setPokemonImagen1(pokemon.sprites.front_default))
 
-    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+1))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual + 1))
       .then(response => response.json())
       .then(pokemon => setPokemonNombre2(pokemon.name))
-    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+1))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual + 1))
       .then(response => response.json())
       .then(pokemon => setPokemonImagen2(pokemon.sprites.front_default))
-    
-    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+2))
+
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual + 2))
       .then(response => response.json())
       .then(pokemon => setPokemonNombre3(pokemon.name))
-    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+2))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual + 2))
       .then(response => response.json())
       .then(pokemon => setPokemonImagen3(pokemon.sprites.front_default))
 
-    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+3))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual + 3))
       .then(response => response.json())
       .then(pokemon => setPokemonNombre4(pokemon.name))
-    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+3))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual + 3))
       .then(response => response.json())
       .then(pokemon => setPokemonImagen4(pokemon.sprites.front_default))
 
-    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+4))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual + 4))
       .then(response => response.json())
       .then(pokemon => setPokemonNombre5(pokemon.name))
-    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+4))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual + 4))
       .then(response => response.json())
       .then(pokemon => setPokemonImagen5(pokemon.sprites.front_default))
 
   }
 
   function aumentarIndex() {
-    setIndexActual((indexActual+5));
+    setIndexActual((indexActual + 5));
   }
 
   function disminuirIndex() {
-    if(indexActual > 1) {
-      setIndexActual((indexActual-5));
+    if (indexActual > 1) {
+      setIndexActual((indexActual - 5));
     }
   }
 
+  function SimpleDialog(props) {
+    const { id, open } = props;
+
+    const handleClose = () => {
+      setOpen(false);
+      console.log(id);
+    };
+
+    return (
+      <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+        <DialogTitle id="simple-dialog-title">
+          {
+            id === 0 ? pokemonNombre1
+              :
+              id === 1 ? pokemonNombre2
+                :
+                id === 2 ? pokemonNombre3
+                  :
+                  id === 3 ? pokemonNombre4
+                    :
+                    pokemonNombre5
+          }
+        </DialogTitle>
+        <img src={
+
+          id === 0 ? pokemonImagen1
+            :
+            id === 1 ? pokemonImagen2
+              :
+              id === 2 ? pokemonImagen3
+                :
+                id === 3 ? pokemonImagen4
+                  :
+                  pokemonImagen5
+
+        } alt="" width="120px" heigth="120px" style={{ marginTop: 10 }} />
+      </Dialog>
+    );
+  }
+
   return (
+
+
     <div style={{ backgroundColor: "#2B303A" }}>
+
       <React.Fragment>
         <Grid container justify="center" alignItems="center" style={screenWidth < 800 ? { marginTop: 0, marginBottom: 0 } : { marginTop: 40, marginBottom: 40 }}>
           <Grid item xs={(screenWidth >= 1366) ? 4 : (screenWidth < 1366 && screenWidth > 850) ? 6 : 12}>
-
             <Grid container justify="center">
               <Grid item xs>
                 <AppBar position="static" style={{ justify: "space-between", background: "#CF2F2F", borderTopLeftRadius: 10, borderTopRightRadius: 10 }}>
@@ -257,38 +263,43 @@ function App() {
             <Grid container justify="center">
               <Grid item xs style={{ backgroundColor: "#BAC1B8", borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
 
-                {/* <Grid container> */}
                 {pokemones.map((pokemon, index) => (
                   <p style={index !== 2 ? { textAlign: "center" } : { textAlign: "space-between" }}>
 
                     {index !== 2 &&
                       <Grid container justify="center">
 
-                        <ButtonBase className={classes.ButtonPokemon} style={{ font: "Roboto", borderRadius: 10 }}>
+                        <ButtonBase
+                          className={classes.ButtonPokemon}
+                          id="unique-id"
+                          onClick={() => handleClickOpen()}
+                          style={{ font: "Roboto", borderRadius: 10 }}>
 
                           <Grid item xs>
+                            {/* <Fade top> */}
                             <img src={
 
                               index === 0 ? pokemonImagen1 : index === 1 ? pokemonImagen2 : index === 2 ? pokemonImagen3 : index === 3 ? pokemonImagen4 : pokemonImagen5
-                              
-                              } alt="" width="120px" heigth="120px" style={{ marginTop: 10 }} />
 
+                            } alt="" width="120px" heigth="120px" style={{ marginTop: 10 }} />
+                            {/* </Fade> */}
                             <p style={{ marginTop: -17 }}>{
-                            
-                            index === 0 ? pokemonNombre1.charAt(0).toUpperCase() + pokemonNombre1.slice(1) 
-                            : 
-                            index === 1 ? pokemonNombre2.charAt(0).toUpperCase() + pokemonNombre2.slice(1) 
-                            : 
-                            index === 2 ? pokemonNombre3.charAt(0).toUpperCase() + pokemonNombre3.slice(1) 
-                            : 
-                            index === 3 ? pokemonNombre4.charAt(0).toUpperCase() + pokemonNombre4.slice(1) 
-                            : 
-                            pokemonNombre5.charAt(0).toUpperCase() + pokemonNombre5.slice(1)
-                            
+
+                              index === 0 ? pokemonNombre1.charAt(0).toUpperCase() + pokemonNombre1.slice(1)
+                                :
+                                index === 1 ? pokemonNombre2.charAt(0).toUpperCase() + pokemonNombre2.slice(1)
+                                  :
+                                  index === 2 ? pokemonNombre3.charAt(0).toUpperCase() + pokemonNombre3.slice(1)
+                                    :
+                                    index === 3 ? pokemonNombre4.charAt(0).toUpperCase() + pokemonNombre4.slice(1)
+                                      :
+                                      pokemonNombre5.charAt(0).toUpperCase() + pokemonNombre5.slice(1)
+
                             }</p>
 
                           </Grid>
                         </ButtonBase>
+                        <SimpleDialog open={open} onClose={handleClose} index={index} />
 
                       </Grid>
 
@@ -298,25 +309,31 @@ function App() {
 
                       <Grid container justify="space-between">
 
-                        <FontAwesomeIcon 
-                        icon={faChevronCircleLeft} 
-                        
-                        onClick={disminuirIndex}
-                        className={classes.ChevronCircleLeft} 
-                        size="5x" 
-                        color="#2B303A" 
-                        style={{ marginTop: 25 }}>
+                        <FontAwesomeIcon
+                          icon={faChevronCircleLeft}
+                          onClick={disminuirIndex}
+                          className={classes.ChevronCircleLeft}
+                          size="5x"
+                          color="#2B303A"
+                          style={{ marginTop: 25, textShadow: "2px 2px" }}>
 
                         </FontAwesomeIcon>
 
-                        <ButtonBase className={classes.ButtonPokemon} style={{ font: "Roboto", borderRadius: 10 }}>
+                        <ButtonBase
+                          className={classes.ButtonPokemon}
+                          id="unique-id"
+                          onClick={() => handleClickOpen()}
+                          style={{ font: "Roboto", borderRadius: 10 }}>
 
                           <Grid item xs>
+                            {/* <Fade top> */}
                             <img src={pokemonImagen3} alt="" width="120px" heigth="120px" style={{ marginTop: 10 }} />
+                            {/* </Fade> */}
                             <p style={{ marginTop: -17 }}>{pokemonNombre3.charAt(0).toUpperCase() + pokemonNombre3.slice(1)}</p>
 
                           </Grid>
                         </ButtonBase>
+                        <SimpleDialog open={open} onClose={handleClose} index={index} />
 
                         <FontAwesomeIcon
                           icon={faChevronCircleRight}
@@ -333,7 +350,6 @@ function App() {
 
                   </p>
                 ))}
-                {/* </Grid> */}
 
               </Grid>
 
