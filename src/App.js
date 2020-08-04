@@ -6,6 +6,11 @@ import Grid from '@material-ui/core/Grid';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { makeStyles } from '@material-ui/core/styles';
 import { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronCircleRight } from '@fortawesome/free-solid-svg-icons'
+import { faChevronCircleLeft } from '@fortawesome/free-solid-svg-icons'
+// import { faQuestion } from '@fortawesome/free-solid-svg-icons'
+
 
 export const useStyles = makeStyles(theme => ({
   ButtonPokemon: {
@@ -27,6 +32,32 @@ export const useStyles = makeStyles(theme => ({
     },
   },
 
+  ChevronCircleLeft: {
+    marginLeft: 35,
+    [theme.breakpoints.only('md')]: {
+      marginLeft: 30,
+    },
+    [theme.breakpoints.only('sm')]: {
+      marginLeft: 25,
+    },
+    [theme.breakpoints.only('xs')]: {
+      marginLeft: 15,
+    },
+  },
+
+  ChevronCircleRight: {
+    marginRight: 35,
+    [theme.breakpoints.only('md')]: {
+      marginRight: 30,
+    },
+    [theme.breakpoints.only('sm')]: {
+      marginRight: 20,
+    },
+    [theme.breakpoints.only('xs')]: {
+      marginRight: 15,
+    },
+  },
+
   /******************
  * - SCROLL - *
  ******************/
@@ -45,17 +76,67 @@ function App() {
 
   const screenWidth = window.innerWidth;
 
-  // const [allPokemones, setPokemones] = useState({results:['']});
-  const [pokemonId, setPokemonId] = useState(0);
-  const [pokemonNombre, setPokemonNombre] = useState("");
-  const [pokemonImagen, setPokemonImagen] = useState("");
+  // const [allPokemones, setPokemones] = useState({
+  //   nombre: "",
+  //   imagen: ""
+  // });
+
+  // const [pokemon1, setPokemon1] = useState({
+  //   nombre: "",
+  //   imagen: ""
+  // });
+  // const [pokemon2, setPokemon2] = useState({
+  //   nombre: "",
+  //   imagen: ""
+  // });
+  // const [pokemon3, setPokemon3] = useState({
+  //   nombre: "",
+  //   imagen: ""
+  // });
+  // const [pokemon4, setPokemon4] = useState({
+  //   nombre: "",
+  //   imagen: ""
+  // });
+  // const [pokemon5, setPokemon5] = useState({
+  //   nombre: "",
+  //   imagen: ""
+  // });
+
+  const [pokemonNombre1, setPokemonNombre1] = useState("");
+  const [pokemonImagen1, setPokemonImagen1] = useState("");
+  const [pokemonNombre2, setPokemonNombre2] = useState("");
+  const [pokemonImagen2, setPokemonImagen2] = useState("");
+  const [pokemonNombre3, setPokemonNombre3] = useState("");
+  const [pokemonImagen3, setPokemonImagen3] = useState("");
+  const [pokemonNombre4, setPokemonNombre4] = useState("");
+  const [pokemonImagen4, setPokemonImagen4] = useState("");
+  const [pokemonNombre5, setPokemonNombre5] = useState("");
+  const [pokemonImagen5, setPokemonImagen5] = useState("");
+
+  const [indexActual, setIndexActual] = useState(1);
+
 
   // const [pokemones, setPokemones] = useState({
   //   pokemon: {
-  //     id: 0,
   //     nombre: "",
   //     imagen: "",
-  //   }
+  //   },
+  //   pokemon: {
+  //     nombre: "",
+  //     imagen: "",
+  //   },
+  //   pokemon: {
+  //     nombre: "",
+  //     imagen: "",
+  //   },
+  //   pokemon: {
+  //     nombre: "",
+  //     imagen: "",
+  //   },
+  //   pokemon: {
+  //     nombre: "",
+  //     imagen: "",
+  //   },
   // })
 
   // EN el fetch traer los 5 resultados, setearlos en 'pokemones' y mapear pokemones 
@@ -93,23 +174,63 @@ function App() {
 
   useEffect(() => {
 
-    fetchPokemonInfo(1);
+    fetchPokemonInfo();
+    console.log("JEJES");
 
-  }, []);
+  }, [indexActual]);
 
-  function fetchPokemonInfo(index) {
 
-    fetch('https://pokeapi.co/api/v2/pokemon/'+index)
-    .then(response => response.json())
-    .then(pokemon => setPokemonId(pokemon.id))
+  function fetchPokemonInfo() {
 
-    fetch('https://pokeapi.co/api/v2/pokemon/'+index)
+    console.log("JEJOS");
+    console.log("INDEX: " + indexActual);
+
+    // PRIMERO DE LA PAGINA
+    fetch('https://pokeapi.co/api/v2/pokemon/' + indexActual)
       .then(response => response.json())
-      .then(pokemon => setPokemonNombre(pokemon.name))
-
-    fetch('https://pokeapi.co/api/v2/pokemon/'+index)
+      .then(pokemon => setPokemonNombre1(pokemon.name))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + indexActual)
       .then(response => response.json())
-      .then(pokemon => setPokemonImagen(pokemon.sprites.front_default))
+      .then(pokemon => setPokemonImagen1(pokemon.sprites.front_default))
+
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+1))
+      .then(response => response.json())
+      .then(pokemon => setPokemonNombre2(pokemon.name))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+1))
+      .then(response => response.json())
+      .then(pokemon => setPokemonImagen2(pokemon.sprites.front_default))
+    
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+2))
+      .then(response => response.json())
+      .then(pokemon => setPokemonNombre3(pokemon.name))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+2))
+      .then(response => response.json())
+      .then(pokemon => setPokemonImagen3(pokemon.sprites.front_default))
+
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+3))
+      .then(response => response.json())
+      .then(pokemon => setPokemonNombre4(pokemon.name))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+3))
+      .then(response => response.json())
+      .then(pokemon => setPokemonImagen4(pokemon.sprites.front_default))
+
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+4))
+      .then(response => response.json())
+      .then(pokemon => setPokemonNombre5(pokemon.name))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + (indexActual+4))
+      .then(response => response.json())
+      .then(pokemon => setPokemonImagen5(pokemon.sprites.front_default))
+
+  }
+
+  function aumentarIndex() {
+    setIndexActual((indexActual+5));
+  }
+
+  function disminuirIndex() {
+    if(indexActual > 1) {
+      setIndexActual((indexActual-5));
+    }
   }
 
   return (
@@ -120,11 +241,14 @@ function App() {
 
             <Grid container justify="center">
               <Grid item xs>
-                <AppBar position="static" style={{ background: "#CF2F2F", borderTopLeftRadius: 10, borderTopRightRadius: 10 }}>
-                  <Toolbar style={{ alignSelf: "center" }}>
+                <AppBar position="static" style={{ justify: "space-between", background: "#CF2F2F", borderTopLeftRadius: 10, borderTopRightRadius: 10 }}>
+                  <Toolbar style={{ alignSelf: "center", alignItems: "space-between" }}>
                     <Typography style={{ font: "Roboto", fontSize: 22 }}>
                       POKEDEX
-                  </Typography>
+                    </Typography>
+
+                    {/* <FontAwesomeIcon icon={faQuestion} ></FontAwesomeIcon> */}
+
                   </Toolbar>
                 </AppBar>
               </Grid>
@@ -134,15 +258,79 @@ function App() {
               <Grid item xs style={{ backgroundColor: "#BAC1B8", borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
 
                 {/* <Grid container> */}
-                {pokemones.map((pokemon) => (
-                  <p style={{ textAlign: "center" }}>
-                    <ButtonBase className={classes.ButtonPokemon} style={{ font: "Roboto", borderRadius: 10 }}>
-                      <Grid item xs>
-                        <img src={pokemonImagen} alt={pokemonId} width="120px" heigth="120px" style={{ marginTop: 10 }} />
-                        <p style={{ marginTop: -17 }}>{pokemonNombre.charAt(0).toUpperCase() + pokemonNombre.slice(1)}</p>
+                {pokemones.map((pokemon, index) => (
+                  <p style={index !== 2 ? { textAlign: "center" } : { textAlign: "space-between" }}>
+
+                    {index !== 2 &&
+                      <Grid container justify="center">
+
+                        <ButtonBase className={classes.ButtonPokemon} style={{ font: "Roboto", borderRadius: 10 }}>
+
+                          <Grid item xs>
+                            <img src={
+
+                              index === 0 ? pokemonImagen1 : index === 1 ? pokemonImagen2 : index === 2 ? pokemonImagen3 : index === 3 ? pokemonImagen4 : pokemonImagen5
+                              
+                              } alt="" width="120px" heigth="120px" style={{ marginTop: 10 }} />
+
+                            <p style={{ marginTop: -17 }}>{
+                            
+                            index === 0 ? pokemonNombre1.charAt(0).toUpperCase() + pokemonNombre1.slice(1) 
+                            : 
+                            index === 1 ? pokemonNombre2.charAt(0).toUpperCase() + pokemonNombre2.slice(1) 
+                            : 
+                            index === 2 ? pokemonNombre3.charAt(0).toUpperCase() + pokemonNombre3.slice(1) 
+                            : 
+                            index === 3 ? pokemonNombre4.charAt(0).toUpperCase() + pokemonNombre4.slice(1) 
+                            : 
+                            pokemonNombre5.charAt(0).toUpperCase() + pokemonNombre5.slice(1)
+                            
+                            }</p>
+
+                          </Grid>
+                        </ButtonBase>
+
                       </Grid>
 
-                    </ButtonBase>
+                    }
+
+                    {index === 2 &&
+
+                      <Grid container justify="space-between">
+
+                        <FontAwesomeIcon 
+                        icon={faChevronCircleLeft} 
+                        
+                        onClick={disminuirIndex}
+                        className={classes.ChevronCircleLeft} 
+                        size="5x" 
+                        color="#2B303A" 
+                        style={{ marginTop: 25 }}>
+
+                        </FontAwesomeIcon>
+
+                        <ButtonBase className={classes.ButtonPokemon} style={{ font: "Roboto", borderRadius: 10 }}>
+
+                          <Grid item xs>
+                            <img src={pokemonImagen3} alt="" width="120px" heigth="120px" style={{ marginTop: 10 }} />
+                            <p style={{ marginTop: -17 }}>{pokemonNombre3.charAt(0).toUpperCase() + pokemonNombre3.slice(1)}</p>
+
+                          </Grid>
+                        </ButtonBase>
+
+                        <FontAwesomeIcon
+                          icon={faChevronCircleRight}
+                          onClick={aumentarIndex}
+                          className={classes.ChevronCircleRight}
+                          size="5x"
+                          color="#2B303A"
+                          style={{ marginTop: 25 }}>
+                        </FontAwesomeIcon>
+
+                      </Grid>
+                    }
+
+
                   </p>
                 ))}
                 {/* </Grid> */}
