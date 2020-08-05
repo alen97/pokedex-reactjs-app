@@ -84,6 +84,7 @@ function App() {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
+    fetchPokemonSeleccionadoDetalle(indexActual);
     setOpen(true);
   };
 
@@ -126,6 +127,13 @@ function App() {
       nombre: 'POKEMON 5'
     }
   ]
+
+  const [pokemonDetalleNombre, setPokemonDetalleNombre] = useState("");
+  const [pokemonDetalleImagen, setPokemonDetalleImagen] = useState("");
+  const [pokemonDetalleTipo1, setPokemonDetalleTipo1] = useState("");
+  const [pokemonDetalleTipo2, setPokemonDetalleTipo2] = useState("");
+  const [pokemonDetalleAltura, setPokemonDetalleAltura] = useState(0,0);
+  const [pokemonDetallePeso, setPokemonDetallePeso] = useState(0);
 
   // const BASE_URL = 'https://pokeapi.co/api/v2'
   // const POKEMON_NAME = BASE_URL+'/pokemon'
@@ -187,7 +195,32 @@ function App() {
 
   }
 
+  function fetchPokemonSeleccionadoDetalle(indexSeleccionado) {
+
+    // PRIMERO DE LA PAGINA
+    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+      .then(response => response.json())
+      .then(pokemon => setPokemonDetalleNombre(pokemon.name))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+      .then(response => response.json())
+      .then(pokemon => setPokemonDetalleImagen(pokemon.sprites.front_default))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+      .then(response => response.json())
+      .then(pokemon => setPokemonDetalleTipo1(pokemon.types[0].type.name))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+      .then(response => response.json())
+      .then(pokemon => pokemon.types[1] === undefined ? setPokemonDetalleTipo2(undefined): setPokemonDetalleTipo2(pokemon.types[1].type.name))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+      .then(response => response.json())
+      .then(pokemon => setPokemonDetalleAltura((parseFloat(pokemon.height) * parseFloat(0.10)).toFixed(1)))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+      .then(response => response.json())
+      .then(pokemon => setPokemonDetallePeso(parseInt(pokemon.weight)))
+
+  }
+
   function aumentarIndex() {
+    if(indexActual <= 649)
     setIndexActual((indexActual + 5));
   }
 
@@ -207,34 +240,76 @@ function App() {
 
     return (
       <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-        <DialogTitle id="simple-dialog-title">
+        <DialogTitle id="simple-dialog-title" style={{ alignSelf: "center" }}>
           {
-            id === 0 ? pokemonNombre1
-              :
-              id === 1 ? pokemonNombre2
-                :
-                id === 2 ? pokemonNombre3
-                  :
-                  id === 3 ? pokemonNombre4
-                    :
-                    pokemonNombre5
+            // id === 0 ? pokemonNombre1
+            //   :
+            //   id === 1 ? pokemonNombre2
+            //     :
+            //     id === 2 ? pokemonNombre3
+            //       :
+            //       id === 3 ? pokemonNombre4
+            //         :
+            //         pokemonNombre5
+            pokemonDetalleNombre
           }
         </DialogTitle>
         <img src={
 
-          id === 0 ? pokemonImagen1
-            :
-            id === 1 ? pokemonImagen2
-              :
-              id === 2 ? pokemonImagen3
-                :
-                id === 3 ? pokemonImagen4
-                  :
-                  pokemonImagen5
+          // id === 0 ? pokemonImagen1
+          //   :
+          //   id === 1 ? pokemonImagen2
+          //     :
+          //     id === 2 ? pokemonImagen3
+          //       :
+          //       id === 3 ? pokemonImagen4
+          //         :
+          //         pokemonImagen5
+          pokemonDetalleImagen
 
-        } alt="" width="120px" heigth="120px" style={{ marginTop: 10 }} />
-      </Dialog>
+        } alt="" width="120px" heigth="120px" style={{ alignSelf: "center" }} />
+
+        <Grid container justify="center">
+          <Grid item xs={pokemonDetalleTipo2 != null ? 6 : 12}>
+            <Typography style={{ textAlign: "center" }}>
+              {pokemonDetalleTipo1}
+            </Typography>
+          </Grid>
+          {
+            pokemonDetalleTipo2 !== undefined &&
+
+            <Grid item xs={6}>
+              <Typography style={{ textAlign: "center" }}>
+                {pokemonDetalleTipo2}
+              </Typography>
+            </Grid>
+          }
+
+        </Grid>
+
+        <span>&nbsp;&nbsp;</span>
+
+        <Grid container justify="center">
+          <Grid item xs={6}>
+            <Typography style={{ textAlign: "center" }}>
+              {pokemonDetalleAltura} m
+            </Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography style={{ textAlign: "center" }}>
+              {pokemonDetallePeso} kg
+            </Typography>
+          </Grid>
+        </Grid>
+
+        <span>&nbsp;</span>
+
+      </Dialog >
     );
+  }
+
+  function CapitalizeFirstLetter(palabra) {
+    return palabra.charAt(0).toUpperCase() + palabra.slice(1)
   }
 
   return (
@@ -285,15 +360,15 @@ function App() {
                             {/* </Fade> */}
                             <p style={{ marginTop: -17 }}>{
 
-                              index === 0 ? pokemonNombre1.charAt(0).toUpperCase() + pokemonNombre1.slice(1)
+                              index === 0 ? CapitalizeFirstLetter(pokemonNombre1)
                                 :
-                                index === 1 ? pokemonNombre2.charAt(0).toUpperCase() + pokemonNombre2.slice(1)
+                                index === 1 ? CapitalizeFirstLetter(pokemonNombre2)
                                   :
-                                  index === 2 ? pokemonNombre3.charAt(0).toUpperCase() + pokemonNombre3.slice(1)
+                                  index === 2 ? CapitalizeFirstLetter(pokemonNombre3)
                                     :
-                                    index === 3 ? pokemonNombre4.charAt(0).toUpperCase() + pokemonNombre4.slice(1)
+                                    index === 3 ? CapitalizeFirstLetter(pokemonNombre4)
                                       :
-                                      pokemonNombre5.charAt(0).toUpperCase() + pokemonNombre5.slice(1)
+                                      CapitalizeFirstLetter(pokemonNombre5)
 
                             }</p>
 
@@ -315,7 +390,7 @@ function App() {
                           className={classes.ChevronCircleLeft}
                           size="5x"
                           color="#2B303A"
-                          style={{ marginTop: 25, textShadow: "2px 2px" }}>
+                          style={{ marginTop: 25, textShadow: "2px 2px", cursor: "pointer" }}>
 
                         </FontAwesomeIcon>
 
@@ -329,7 +404,7 @@ function App() {
                             {/* <Fade top> */}
                             <img src={pokemonImagen3} alt="" width="120px" heigth="120px" style={{ marginTop: 10 }} />
                             {/* </Fade> */}
-                            <p style={{ marginTop: -17 }}>{pokemonNombre3.charAt(0).toUpperCase() + pokemonNombre3.slice(1)}</p>
+                            <p style={{ marginTop: -17 }}>{CapitalizeFirstLetter(pokemonNombre3)}</p>
 
                           </Grid>
                         </ButtonBase>
@@ -341,7 +416,7 @@ function App() {
                           className={classes.ChevronCircleRight}
                           size="5x"
                           color="#2B303A"
-                          style={{ marginTop: 25 }}>
+                          style={{ marginTop: 25, cursor: "pointer" }}>
                         </FontAwesomeIcon>
 
                       </Grid>
