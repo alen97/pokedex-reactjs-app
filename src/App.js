@@ -84,18 +84,31 @@ function App() {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
-    fetchPokemonSeleccionadoDetalle(indexActual);
-    setOpen(true);
+
+    // var fetchDetallePromise = new Promise(function(resolve, reject) {
+    //   fetchPokemonSeleccionadoDetalle(indexActual);
+    // })
+    
+    // fetchDetallePromise.then(setOpen(true), console.log("AsD"))
+    
+    //fetchPokemonSeleccionadoDetalle(indexActual);
+
+    // const id = event.target.id;
+    //   console.log(id);
+
+    setOpen(true)
+
   };
 
   const handleClose = () => {
     setOpen(false);
+    console.log("CIERRO SHIT")
   };
 
-  function handleClick(event) {
-    const id = event.target.id;
-    console.log(id);
-  };
+  // function handleClick(event) {
+  //   const id = event.target.id;
+  //   console.log(id);
+  // };
 
   const [pokemonNombre1, setPokemonNombre1] = useState("");
   const [pokemonImagen1, setPokemonImagen1] = useState("");
@@ -132,8 +145,11 @@ function App() {
   const [pokemonDetalleImagen, setPokemonDetalleImagen] = useState("");
   const [pokemonDetalleTipo1, setPokemonDetalleTipo1] = useState("");
   const [pokemonDetalleTipo2, setPokemonDetalleTipo2] = useState("");
-  const [pokemonDetalleAltura, setPokemonDetalleAltura] = useState(0,0);
+  const [pokemonDetalleAltura, setPokemonDetalleAltura] = useState(0, 0);
   const [pokemonDetallePeso, setPokemonDetallePeso] = useState(0);
+
+  // const [allPokemones, setAllPokemones] = useState({});
+
 
   // const BASE_URL = 'https://pokeapi.co/api/v2'
   // const POKEMON_NAME = BASE_URL+'/pokemon'
@@ -151,6 +167,7 @@ function App() {
   useEffect(() => {
 
     fetchPokemonInfo();
+    console.log("DADAS")
 
   }, [indexActual]);
 
@@ -195,33 +212,11 @@ function App() {
 
   }
 
-  function fetchPokemonSeleccionadoDetalle(indexSeleccionado) {
-
-    // PRIMERO DE LA PAGINA
-    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
-      .then(response => response.json())
-      .then(pokemon => setPokemonDetalleNombre(pokemon.name))
-    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
-      .then(response => response.json())
-      .then(pokemon => setPokemonDetalleImagen(pokemon.sprites.front_default))
-    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
-      .then(response => response.json())
-      .then(pokemon => setPokemonDetalleTipo1(pokemon.types[0].type.name))
-    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
-      .then(response => response.json())
-      .then(pokemon => pokemon.types[1] === undefined ? setPokemonDetalleTipo2(undefined): setPokemonDetalleTipo2(pokemon.types[1].type.name))
-    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
-      .then(response => response.json())
-      .then(pokemon => setPokemonDetalleAltura((parseFloat(pokemon.height) * parseFloat(0.10)).toFixed(1)))
-    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
-      .then(response => response.json())
-      .then(pokemon => setPokemonDetallePeso(parseInt(pokemon.weight)))
-
-  }
+  
 
   function aumentarIndex() {
-    if(indexActual <= 649)
-    setIndexActual((indexActual + 5));
+    if (indexActual <= 649)
+      setIndexActual((indexActual + 5));
   }
 
   function disminuirIndex() {
@@ -231,13 +226,47 @@ function App() {
   }
 
   function SimpleDialog(props) {
-    const { id, open } = props;
+    const { open, index } = props;
 
     const handleClose = () => {
       setOpen(false);
-      console.log(id);
+      setPokemonDetalleNombre("");
+      setPokemonDetalleImagen("");
+      setPokemonDetalleTipo1("");
+      setPokemonDetalleTipo2("");
+      setPokemonDetalleAltura(0, 0);
+      setPokemonDetallePeso(0);
     };
 
+    function fetchPokemonSeleccionadoDetalle(indexSeleccionado) {
+
+      // PRIMERO DE LA PAGINA
+      fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+        .then(response => response.json())
+        .then(pokemon => setPokemonDetalleNombre(pokemon.name))
+      fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+        .then(response => response.json())
+        .then(pokemon => setPokemonDetalleImagen(pokemon.sprites.front_default))
+      fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+        .then(response => response.json())
+        .then(pokemon => setPokemonDetalleTipo1(pokemon.types[0].type.name))
+      fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+        .then(response => response.json())
+        .then(pokemon => pokemon.types[1] === undefined ? setPokemonDetalleTipo2(undefined) : setPokemonDetalleTipo2(pokemon.types[1].type.name))
+      fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+        .then(response => response.json())
+        .then(pokemon => setPokemonDetalleAltura((parseFloat(pokemon.height) * parseFloat(0.10)).toFixed(1)))
+      fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+        .then(response => response.json())
+        .then(pokemon => setPokemonDetallePeso(parseInt(pokemon.weight)))
+  
+    }
+
+    useEffect(() => {
+      fetchPokemonSeleccionadoDetalle(indexActual);
+      console.log(index);
+    },[]);
+    
     return (
       <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
         <DialogTitle id="simple-dialog-title" style={{ alignSelf: "center" }}>
@@ -346,7 +375,7 @@ function App() {
 
                         <ButtonBase
                           className={classes.ButtonPokemon}
-                          id="unique-id"
+                          // id={index}
                           onClick={() => handleClickOpen()}
                           style={{ font: "Roboto", borderRadius: 10 }}>
 
@@ -396,7 +425,7 @@ function App() {
 
                         <ButtonBase
                           className={classes.ButtonPokemon}
-                          id="unique-id"
+                          // id={index}
                           onClick={() => handleClickOpen()}
                           style={{ font: "Roboto", borderRadius: 10 }}>
 
