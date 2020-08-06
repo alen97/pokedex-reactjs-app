@@ -158,7 +158,7 @@ function App() {
 
     fetchPokemonSeleccionadoDetalle(index + indexActual);
 
-    sleep(500).then(() => { setOpen(true); });
+    sleep(700).then(() => { setOpen(true); });
   };
 
   // const handleClose = () => {
