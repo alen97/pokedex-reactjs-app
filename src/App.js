@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { makeStyles } from '@material-ui/core/styles';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronCircleRight } from '@fortawesome/free-solid-svg-icons'
 import { faChevronCircleLeft } from '@fortawesome/free-solid-svg-icons'
@@ -13,7 +13,6 @@ import { faChevronCircleLeft } from '@fortawesome/free-solid-svg-icons'
 // import Fade from 'react-reveal/Fade'
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-
 
 export const useStyles = makeStyles(theme => ({
   ButtonPokemon: {
@@ -81,30 +80,6 @@ function App() {
 
   const screenWidth = window.innerWidth;
 
-  const [open, setOpen] = useState(false);
-
-  const handleClickOpen = () => {
-
-    // var fetchDetallePromise = new Promise(function(resolve, reject) {
-    //   fetchPokemonSeleccionadoDetalle(indexActual);
-    // })
-    
-    // fetchDetallePromise.then(setOpen(true), console.log("AsD"))
-    
-    //fetchPokemonSeleccionadoDetalle(indexActual);
-
-    // const id = event.target.id;
-    //   console.log(id);
-
-    setOpen(true)
-
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    console.log("CIERRO SHIT")
-  };
-
   // function handleClick(event) {
   //   const id = event.target.id;
   //   console.log(id);
@@ -151,6 +126,45 @@ function App() {
   // const [allPokemones, setAllPokemones] = useState({});
 
 
+  function limpiarDetalle() {
+    setPokemonDetalleNombre("");
+    setPokemonDetalleImagen("");
+    setPokemonDetalleTipo1("");
+    setPokemonDetalleTipo2("");
+    setPokemonDetalleAltura(0, 0);
+    setPokemonDetallePeso(0);
+  }
+
+  const [open, setOpen] = useState(false);
+
+  const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+
+  const handleClickOpen = (index) => {
+
+    // var fetchDetallePromise = new Promise(function(resolve, reject) {
+    //   fetchPokemonSeleccionadoDetalle(indexActual);
+    // })
+
+    // fetchDetallePromise.then(setOpen(true), console.log("AsD"))
+
+    //fetchPokemonSeleccionadoDetalle(indexActual);
+
+    // const id = event.target.id;
+    // console.log(id);
+   
+    fetchPokemonSeleccionadoDetalle(index+indexActual);
+
+    sleep(200).then(() => {setOpen(true);});
+  };
+
+  // const handleClose = () => {
+  //   setOpen(false);
+  //   limpiarDetalle();
+  //   console.log("CIERRO SHIT")
+  // };
+
   // const BASE_URL = 'https://pokeapi.co/api/v2'
   // const POKEMON_NAME = BASE_URL+'/pokemon'
   // const POKEMON_HABILIDADES = BASE_URL+'/abilities'
@@ -171,6 +185,17 @@ function App() {
 
   }, [indexActual]);
 
+  // const firstUpdate = useRef(true);
+  // useLayoutEffect(() => {
+  //   if (firstUpdate.current) {
+  //     console.log("PRIMER USEEFFECT");
+  //     firstUpdate.current = false;
+  //   } else {
+  //     // fetchPokemonSeleccionadoDetalle(indexDetalleSeleccionado+indexActual);
+  //     console.log("KAKAKL")
+  //   }
+
+  // }, [open]);
 
   function fetchPokemonInfo() {
 
@@ -212,7 +237,29 @@ function App() {
 
   }
 
-  
+  function fetchPokemonSeleccionadoDetalle(indexSeleccionado) {
+
+    // PRIMERO DE LA PAGINA
+    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+      .then(response => response.json())
+      .then(pokemon => setPokemonDetalleNombre(pokemon.name))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+      .then(response => response.json())
+      .then(pokemon => setPokemonDetalleImagen(pokemon.sprites.front_default))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+      .then(response => response.json())
+      .then(pokemon => setPokemonDetalleTipo1(pokemon.types[0].type.name))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+      .then(response => response.json())
+      .then(pokemon => pokemon.types[1] === undefined ? setPokemonDetalleTipo2(undefined) : setPokemonDetalleTipo2(pokemon.types[1].type.name))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+      .then(response => response.json())
+      .then(pokemon => setPokemonDetalleAltura((parseFloat(pokemon.height) * parseFloat(0.10)).toFixed(1)))
+    fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
+      .then(response => response.json())
+      .then(pokemon => setPokemonDetallePeso(parseInt(pokemon.weight)))
+
+  }
 
   function aumentarIndex() {
     if (indexActual <= 649)
@@ -226,47 +273,20 @@ function App() {
   }
 
   function SimpleDialog(props) {
-    const { open, index } = props;
+    const { open } = props;
 
     const handleClose = () => {
       setOpen(false);
-      setPokemonDetalleNombre("");
-      setPokemonDetalleImagen("");
-      setPokemonDetalleTipo1("");
-      setPokemonDetalleTipo2("");
-      setPokemonDetalleAltura(0, 0);
-      setPokemonDetallePeso(0);
+      limpiarDetalle();
     };
 
-    function fetchPokemonSeleccionadoDetalle(indexSeleccionado) {
+    //fetchPokemonSeleccionadoDetalle(index+1);
 
-      // PRIMERO DE LA PAGINA
-      fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
-        .then(response => response.json())
-        .then(pokemon => setPokemonDetalleNombre(pokemon.name))
-      fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
-        .then(response => response.json())
-        .then(pokemon => setPokemonDetalleImagen(pokemon.sprites.front_default))
-      fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
-        .then(response => response.json())
-        .then(pokemon => setPokemonDetalleTipo1(pokemon.types[0].type.name))
-      fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
-        .then(response => response.json())
-        .then(pokemon => pokemon.types[1] === undefined ? setPokemonDetalleTipo2(undefined) : setPokemonDetalleTipo2(pokemon.types[1].type.name))
-      fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
-        .then(response => response.json())
-        .then(pokemon => setPokemonDetalleAltura((parseFloat(pokemon.height) * parseFloat(0.10)).toFixed(1)))
-      fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
-        .then(response => response.json())
-        .then(pokemon => setPokemonDetallePeso(parseInt(pokemon.weight)))
-  
-    }
+    // useEffect(() => {
+    //   fetchPokemonSeleccionadoDetalle(indexActual);
+    //   console.log(index);
+    // },[]);
 
-    useEffect(() => {
-      fetchPokemonSeleccionadoDetalle(indexActual);
-      console.log(index);
-    },[]);
-    
     return (
       <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
         <DialogTitle id="simple-dialog-title" style={{ alignSelf: "center" }}>
@@ -375,8 +395,7 @@ function App() {
 
                         <ButtonBase
                           className={classes.ButtonPokemon}
-                          // id={index}
-                          onClick={() => handleClickOpen()}
+                          onClick={() => handleClickOpen(index)}
                           style={{ font: "Roboto", borderRadius: 10 }}>
 
                           <Grid item xs>
@@ -403,7 +422,7 @@ function App() {
 
                           </Grid>
                         </ButtonBase>
-                        <SimpleDialog open={open} onClose={handleClose} index={index} />
+                        <SimpleDialog open={open} />
 
                       </Grid>
 
@@ -425,8 +444,7 @@ function App() {
 
                         <ButtonBase
                           className={classes.ButtonPokemon}
-                          // id={index}
-                          onClick={() => handleClickOpen()}
+                          onClick={() => handleClickOpen(index)}
                           style={{ font: "Roboto", borderRadius: 10 }}>
 
                           <Grid item xs>
@@ -437,7 +455,7 @@ function App() {
 
                           </Grid>
                         </ButtonBase>
-                        <SimpleDialog open={open} onClose={handleClose} index={index} />
+                        <SimpleDialog open={open} />
 
                         <FontAwesomeIcon
                           icon={faChevronCircleRight}
