@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { makeStyles } from '@material-ui/core/styles';
-import { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronCircleRight } from '@fortawesome/free-solid-svg-icons'
 import { faChevronCircleLeft } from '@fortawesome/free-solid-svg-icons'
@@ -13,6 +13,7 @@ import { faChevronCircleLeft } from '@fortawesome/free-solid-svg-icons'
 // import Fade from 'react-reveal/Fade'
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
+// import { useRef, useLayoutEffect } from 'react';
 
 export const useStyles = makeStyles(theme => ({
   ButtonPokemon: {
@@ -121,7 +122,8 @@ function App() {
   const [pokemonDetalleTipo1, setPokemonDetalleTipo1] = useState("");
   const [pokemonDetalleTipo2, setPokemonDetalleTipo2] = useState("");
   const [pokemonDetalleAltura, setPokemonDetalleAltura] = useState(0, 0);
-  const [pokemonDetallePeso, setPokemonDetallePeso] = useState(0);
+  const [pokemonDetallePeso, setPokemonDetallePeso] = useState(0, 0);
+  const [pokemonDetalleDescripcion, setPokemonDetalleDescripcion] = useState("");
 
   // const [allPokemones, setAllPokemones] = useState({});
 
@@ -132,7 +134,7 @@ function App() {
     setPokemonDetalleTipo1("");
     setPokemonDetalleTipo2("");
     setPokemonDetalleAltura(0, 0);
-    setPokemonDetallePeso(0);
+    setPokemonDetallePeso(0, 0);
   }
 
   const [open, setOpen] = useState(false);
@@ -153,10 +155,10 @@ function App() {
 
     // const id = event.target.id;
     // console.log(id);
-   
-    fetchPokemonSeleccionadoDetalle(index+indexActual);
 
-    sleep(200).then(() => {setOpen(true);});
+    fetchPokemonSeleccionadoDetalle(index + indexActual);
+
+    sleep(500).then(() => { setOpen(true); });
   };
 
   // const handleClose = () => {
@@ -257,7 +259,11 @@ function App() {
       .then(pokemon => setPokemonDetalleAltura((parseFloat(pokemon.height) * parseFloat(0.10)).toFixed(1)))
     fetch('https://pokeapi.co/api/v2/pokemon/' + indexSeleccionado)
       .then(response => response.json())
-      .then(pokemon => setPokemonDetallePeso(parseInt(pokemon.weight)))
+      .then(pokemon => setPokemonDetallePeso((parseFloat(pokemon.weight) * parseFloat(0.10)).toFixed(1)))
+
+    fetch('https://pokeapi.co/api/v2/pokemon-species/' + indexSeleccionado)
+      .then(response => response.json())
+      .then(pokemon => setPokemonDetalleDescripcion(pokemon.flavor_text_entries[0].flavor_text))
 
   }
 
@@ -300,7 +306,7 @@ function App() {
             //       id === 3 ? pokemonNombre4
             //         :
             //         pokemonNombre5
-            pokemonDetalleNombre
+            CapitalizeFirstLetter(pokemonDetalleNombre)
           }
         </DialogTitle>
         <img src={
@@ -321,7 +327,7 @@ function App() {
         <Grid container justify="center">
           <Grid item xs={pokemonDetalleTipo2 != null ? 6 : 12}>
             <Typography style={{ textAlign: "center" }}>
-              {pokemonDetalleTipo1}
+              {pokemonDetalleTipo1.toUpperCase()}
             </Typography>
           </Grid>
           {
@@ -329,7 +335,7 @@ function App() {
 
             <Grid item xs={6}>
               <Typography style={{ textAlign: "center" }}>
-                {pokemonDetalleTipo2}
+                {pokemonDetalleTipo2.toUpperCase()}
               </Typography>
             </Grid>
           }
@@ -347,6 +353,16 @@ function App() {
           <Grid item xs={6}>
             <Typography style={{ textAlign: "center" }}>
               {pokemonDetallePeso} kg
+            </Typography>
+          </Grid>
+        </Grid>
+
+        <span>&nbsp;</span>
+
+        <Grid container justify="center">
+          <Grid item xs={12}>
+            <Typography style={{ textAlign: "center", width: "160px", fontSize: 14 }}>
+              {pokemonDetalleDescripcion}
             </Typography>
           </Grid>
         </Grid>
