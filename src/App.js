@@ -14,6 +14,8 @@ import { faChevronCircleLeft } from '@fortawesome/free-solid-svg-icons'
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 // import { useRef, useLayoutEffect } from 'react';
+// import FadeIn from 'react-fade-in';
+
 
 export const useStyles = makeStyles(theme => ({
   ButtonPokemon: {
@@ -81,11 +83,6 @@ function App() {
 
   const screenWidth = window.innerWidth;
 
-  // function handleClick(event) {
-  //   const id = event.target.id;
-  //   console.log(id);
-  // };
-
   const [pokemonNombre1, setPokemonNombre1] = useState("");
   const [pokemonImagen1, setPokemonImagen1] = useState("");
   const [pokemonNombre2, setPokemonNombre2] = useState("");
@@ -145,17 +142,6 @@ function App() {
 
   const handleClickOpen = (index) => {
 
-    // var fetchDetallePromise = new Promise(function(resolve, reject) {
-    //   fetchPokemonSeleccionadoDetalle(indexActual);
-    // })
-
-    // fetchDetallePromise.then(setOpen(true), console.log("AsD"))
-
-    //fetchPokemonSeleccionadoDetalle(indexActual);
-
-    // const id = event.target.id;
-    // console.log(id);
-
     fetchPokemonSeleccionadoDetalle(index + indexActual);
 
     sleep(800).then(() => { setOpen(true); });
@@ -183,21 +169,8 @@ function App() {
   useEffect(() => {
 
     fetchPokemonInfo();
-    console.log("DADAS")
 
   }, [indexActual]);
-
-  // const firstUpdate = useRef(true);
-  // useLayoutEffect(() => {
-  //   if (firstUpdate.current) {
-  //     console.log("PRIMER USEEFFECT");
-  //     firstUpdate.current = false;
-  //   } else {
-  //     // fetchPokemonSeleccionadoDetalle(indexDetalleSeleccionado+indexActual);
-  //     console.log("KAKAKL")
-  //   }
-
-  // }, [open]);
 
   function fetchPokemonInfo() {
 
@@ -294,7 +267,12 @@ function App() {
     // },[]);
 
     return (
-      <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+      <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}
+        PaperProps={{
+          style: {
+            padding: 10
+          }
+        }} >
         <DialogTitle id="simple-dialog-title" style={{ alignSelf: "center" }}>
           {
             // id === 0 ? pokemonNombre1
@@ -389,7 +367,7 @@ function App() {
               <Grid item xs>
                 <AppBar position="static" style={{ justify: "space-between", background: "#CF2F2F", borderTopLeftRadius: 10, borderTopRightRadius: 10 }}>
                   <Toolbar style={{ alignSelf: "center", alignItems: "space-between" }}>
-                    <Typography style={{ font: "Roboto", fontSize: 22 }}>
+                    <Typography style={{ font: "Roboto", fontSize: 24, fontWeight: 500 }}>
                       POKEDEX
                     </Typography>
 
@@ -416,12 +394,14 @@ function App() {
 
                           <Grid item xs>
                             {/* <Fade top> */}
-                            <img src={
+                            {/* <FadeIn> */}
+                              <img src={
 
-                              index === 0 ? pokemonImagen1 : index === 1 ? pokemonImagen2 : index === 2 ? pokemonImagen3 : index === 3 ? pokemonImagen4 : pokemonImagen5
+                                index === 0 ? pokemonImagen1 : index === 1 ? pokemonImagen2 : index === 2 ? pokemonImagen3 : index === 3 ? pokemonImagen4 : pokemonImagen5
 
-                            } alt="" width="120px" heigth="120px" style={{ marginTop: 10 }} />
-                            {/* </Fade> */}
+                              } alt="" width="120px" heigth="120px" style={{ marginTop: 10 }} />
+                              {/* </Fade> */}
+                            {/* </FadeIn> */}
                             <p style={{ marginTop: -17 }}>{
 
                               index === 0 ? CapitalizeFirstLetter(pokemonNombre1)
@@ -465,7 +445,9 @@ function App() {
 
                           <Grid item xs>
                             {/* <Fade top> */}
-                            <img src={pokemonImagen3} alt="" width="120px" heigth="120px" style={{ marginTop: 10 }} />
+                            {/* <FadeIn> */}
+                              <img src={pokemonImagen3} alt="" width="120px" heigth="120px" style={{ marginTop: 10 }} />
+                            {/* </FadeIn> */}
                             {/* </Fade> */}
                             <p style={{ marginTop: -17 }}>{CapitalizeFirstLetter(pokemonNombre3)}</p>
 
